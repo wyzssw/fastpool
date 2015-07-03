@@ -9,14 +9,25 @@
  ```
  将打好的包添加到classpath即可
  或者将其发布到nexus
+ 
  ```
  cd fastpool
  mvn deploy
  ```
+ 
  然后添加如下依赖到你的pom.xml下
  
+ ```
+       <dependency>
+          <groupId>com.justdebugit</groupId>
+	  <artifactId>fastpool</artifactId>
+	  <version>1.0-SNAPSHOT</version>
+      </dependency>
+ ```
  
- # example
+ 
+##example
+
  ```java
  package com.justdebugit.fastpool.example;
 
