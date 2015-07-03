@@ -17,12 +17,12 @@
  
  然后添加如下依赖到你的pom.xml下
  
- ```
+ ```xml
        <dependency>
-          <groupId>com.justdebugit</groupId>
-	  <artifactId>fastpool</artifactId>
-	  <version>1.0-SNAPSHOT</version>
-      </dependency>
+           <groupId>com.justdebugit</groupId>
+           <artifactId>fastpool</artifactId>
+           <version>1.0-SNAPSHOT</version>
+       </dependency>
  ```
  
  
