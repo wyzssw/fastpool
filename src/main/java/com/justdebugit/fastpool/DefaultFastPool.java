@@ -53,12 +53,13 @@ public class DefaultFastPool<V> extends FastPool<DefaultEntryHolder<V>, V> imple
 	public void release(V value,boolean broken) {
 		assert value!=null;
 		WeakReference<DefaultEntryHolder<V>> holderReference = null;
-		if ((holderReference=holderContext.get())!=null) {
+		DefaultEntryHolder<V> holder = null;
+		if ((holderReference=holderContext.get())!=null && (holder=holderReference.get())!=null) {
 			holderContext.remove();
 			if (broken) {
-				super.replaceAndrequit(holderReference.get(), objectFactory.makeObject());
+				super.replaceAndrequit(holder, objectFactory.makeObject());
 			}else {
-				super.requite(holderReference.get());
+				super.requite(holder);
 			}
 			
 		}
@@ -76,9 +77,10 @@ public class DefaultFastPool<V> extends FastPool<DefaultEntryHolder<V>, V> imple
 	public void release(V value) {
 		assert value!=null;
 		WeakReference<DefaultEntryHolder<V>> holderReference = null;
-		if ((holderReference=holderContext.get())!=null) {
+		DefaultEntryHolder<V> holder = null;
+		if ((holderReference=holderContext.get())!=null && (holder=holderReference.get())!=null) {
 			holderContext.remove();
-			super.requite(holderReference.get());
+			super.requite(holder);
 		}
 		
 	}
