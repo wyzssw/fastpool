@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 高性能对象池，inspired by hikaricp
+ * 高性能对象池
  *
  * @author justdebugit@gmail.com
  *
@@ -120,7 +120,7 @@ public class  FastPool<T extends IEntryHolder<V>,V>
 	   /**
 	    * 添加新的对象
 	    *
-	    * @param holder an object to add to the holder
+	    * @param holder  object holder
 	    */
 	   public void add(final T holder)
 	   {
@@ -153,7 +153,7 @@ public class  FastPool<T extends IEntryHolder<V>,V>
 	   /**
 	    * 获取当前快照
 	    *
-	    * @param state one of STATE_NOT_IN_USE or STATE_IN_USE
+	    * @param state  STATE_NOT_IN_USE or STATE_IN_USE
 	    * @return 
 	    */
 	   @SuppressWarnings("unchecked")
