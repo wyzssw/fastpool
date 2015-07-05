@@ -87,7 +87,7 @@ public class  FastPool<T extends IEntryHolder<V>,V>
 	               }
 	            }
 	         } while (startSeq < sequence.get());//有还回就重试；可以不经历入队列park的过程提高并发能力
-                 //seq只增不减，tryAcquireShared仅仅判断距离startSeq赋值state有无变化
+                 //seq只增不减，tryAcquireShared仅仅判断距离startSeq赋值state有无变化，即有没有对象还回发生
 	         if (!synchronizer.tryAcquireSharedNanos(startSeq, timeout)) {
 	            return null;
 	         }
