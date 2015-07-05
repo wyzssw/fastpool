@@ -26,7 +26,7 @@ public class  FastPool<T extends IEntryHolder<V>,V>
 	   private static final Logger LOGGER = LoggerFactory.getLogger(FastPool.class);
 	   protected final AbstractQueuedLongSynchronizer synchronizer;
 	   protected final CopyOnWriteArrayList<IEntryHolder<V>> sharedList;//entry pool 
-	   protected final AtomicLong sequence;//pool size
+	   protected final AtomicLong sequence;
 
 	   private final ThreadLocal<ArrayList<WeakReference<IEntryHolder<V>>>> threadList;
 
@@ -34,7 +34,7 @@ public class  FastPool<T extends IEntryHolder<V>,V>
 	   {
 	      this.sharedList = new CopyOnWriteArrayList<IEntryHolder<V>>();
 	      this.synchronizer = new Synchronizer();
-	      this.sequence = new AtomicLong(0);//sequence并非代表池中数量，它随着出入频率动态变更
+	      this.sequence = new AtomicLong(0);//sequence并非代表池中数量，而是使用次数，只增不减
 	      this.threadList = new ThreadLocal<ArrayList<WeakReference<IEntryHolder<V>>>>();
 	   }
 	   
@@ -86,8 +86,8 @@ public class  FastPool<T extends IEntryHolder<V>,V>
 	                  return (T)holder;
 	               }
 	            }
-	         } while (startSeq < sequence.get());//有还回就重试；当占用时间短时，可以不经历入队列park的过程提高并发能力
-             //当竞争激烈,遍历list 进行cas操作成功的概率就会降低，就会导致部分线程进入等待队列挂起，绝对不会发生线程挂起不被唤醒的情况
+	         } while (startSeq < sequence.get());//有还回就重试；可以不经历入队列park的过程提高并发能力
+                 //seq只增不减，tryAcquireShared仅仅判断距离startSeq赋值state有无变化
 	         if (!synchronizer.tryAcquireSharedNanos(startSeq, timeout)) {
 	            return null;
 	         }
