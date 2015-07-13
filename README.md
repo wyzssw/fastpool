@@ -42,7 +42,7 @@ import com.justdebugit.fastpool.DefaultFastPool.ObjectFactory;
  *
  */
 public class FastPoolJedisExample {
-	static final DefaultFastPool<Jedis> fastPool = new DefaultFastPool<Jedis>(5,new ObjectFactory<Jedis>() {
+	static final Pool<Jedis> fastPool = new DefaultFastPool<Jedis>(5,new ObjectFactory<Jedis>() {
 		@Override
 		public Jedis makeObject() {
 			   return new Jedis("127.0.0.1", 6379);
