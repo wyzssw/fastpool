@@ -5,8 +5,9 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.justdebugit.fastpool.DefaultFastPool;
-import com.justdebugit.fastpool.DefaultFastPool.ObjectFactory;
+import com.justdebugit.fastpool.ObjectFactory;
+import com.justdebugit.fastpool.Pool;
+import com.justdebugit.fastpool.ScalableFastPool;
 /**
  * 
  * @author justdebugit
@@ -14,7 +15,7 @@ import com.justdebugit.fastpool.DefaultFastPool.ObjectFactory;
  */
 public class FastPoolSimpleDateExample {
 	
-	static final DefaultFastPool<SimpleDateFormat> fastPool = new DefaultFastPool<SimpleDateFormat>(5,new ObjectFactory<SimpleDateFormat>() {
+	static final Pool<SimpleDateFormat> fastPool = new ScalableFastPool<SimpleDateFormat>(5,20,new ObjectFactory<SimpleDateFormat>() {
 
 		@Override
 		public SimpleDateFormat makeObject() {
@@ -23,7 +24,7 @@ public class FastPoolSimpleDateExample {
 	});
 	public static void main(String[] args) {
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
-		int loopCount = 1000;
+		int loopCount = 1000000;
 		for (int i = 0; i < loopCount; i++) {
 			executorService.submit(new Runnable() {
 				
@@ -32,6 +33,7 @@ public class FastPoolSimpleDateExample {
 					SimpleDateFormat dataFormat = null;
 				    try {
 						dataFormat = fastPool.get();
+						System.out.println(fastPool.size());
 						System.out.println(dataFormat.format(new Date()));
 						System.out.println(dataFormat.parse("2013-05-25 11:21:21"));
 					} catch (Exception e) {

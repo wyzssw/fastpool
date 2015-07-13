@@ -8,7 +8,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @param <T>
  */
-public interface PoolOperation<T> {
+public interface Pool<T> {
 	
 	/**
 	 * 获取一个对象，支持超时
@@ -40,6 +40,12 @@ public interface PoolOperation<T> {
 	 * @param t
 	 */
 	public void release(T t);
+	
+	/**
+	 * 池大小
+	 * @return
+	 */
+	public int size();
 	
 	/**
 	 * 热扩容

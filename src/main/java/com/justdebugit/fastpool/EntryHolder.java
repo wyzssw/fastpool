@@ -7,16 +7,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @param <V>
  */
-public class DefaultEntryHolder<V> implements IEntryHolder<V>{
+public class EntryHolder<V> implements IEntryHolder<V>{
 	private volatile V value;
 	private final AtomicInteger state;
 	
-	public DefaultEntryHolder(V v){
+	public EntryHolder(V v){
 		this.value = v;
 		state = new AtomicInteger();
 	}
 	
-	public  DefaultEntryHolder(V v,int stateInt) {
+	public  EntryHolder(V v,int stateInt) {
 		this.value = v;
 		this.state = new AtomicInteger(stateInt);
 	}

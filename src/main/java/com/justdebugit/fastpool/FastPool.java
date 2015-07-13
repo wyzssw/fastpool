@@ -1,6 +1,7 @@
 package com.justdebugit.fastpool;
 
 
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +127,32 @@ public class  FastPool<T extends IEntryHolder<V>,V>
 	   {
 	      sharedList.add(holder);
 	      synchronizer.releaseShared(sequence.incrementAndGet());
+	   }
+	   
+	   
+	   public boolean tryShrink()
+	   {   
+		   int pendingCount =  getPendingQueue();
+		   if (pendingCount>0 || sharedList.size() < 2||getCount(IEntryHolder.STATE_IN_USE)>=sharedList.size()-1) {
+			   return false;
+		   }
+		   IEntryHolder<V> toBeRemoved = null;
+		   for (final IEntryHolder<V> holder :sharedList) {
+               if (holder.state().compareAndSet(IEntryHolder.STATE_NOT_IN_USE, IEntryHolder.STATE_REMOVED)) {
+            	   toBeRemoved = holder;
+            	   break;
+               }
+           }
+		   if (toBeRemoved==null) {
+			  return false;
+		   }
+	       final boolean removed = sharedList.remove(toBeRemoved);
+	       //这一条语句是很有必要的，为的是避免pengding线程永不苏醒
+	       synchronizer.releaseShared(sequence.incrementAndGet());
+	       if (!removed ) {
+	         LOGGER.warn("shrink attempt failed");
+	       }
+	       return removed;
 	   }
 
 	   /**

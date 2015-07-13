@@ -9,22 +9,16 @@ import java.util.concurrent.TimeoutException;
  *
  * @param <V>
  */
-public class DefaultFastPool<V> extends FastPool<DefaultEntryHolder<V>, V> implements PoolOperation<V> {
+public class DefaultFastPool<V> extends FastPool<EntryHolder<V>, V> implements Pool<V> {
 
-	private  final ThreadLocal<WeakReference<DefaultEntryHolder<V>>> holderContext = new ThreadLocal<WeakReference<DefaultEntryHolder<V>>>();
+	private  final ThreadLocal<WeakReference<EntryHolder<V>>> holderContext = new ThreadLocal<WeakReference<EntryHolder<V>>>();
 	private  ObjectFactory<V> objectFactory ;
 	
 	public  DefaultFastPool(int size,ObjectFactory<V> objectFactory) {
 		this.objectFactory = objectFactory;
 		for (int i = 0; i < size; i++) {
-			super.add(new DefaultEntryHolder<V>(objectFactory.makeObject()));
+			super.add(new EntryHolder<V>(objectFactory.makeObject()));
 		}
-	}
-	
-	
-	public interface ObjectFactory<V>{
-		//object must not be null
-		V  makeObject();
 	}
 	
 	@Override
@@ -39,11 +33,11 @@ public class DefaultFastPool<V> extends FastPool<DefaultEntryHolder<V>, V> imple
 	
 	@Override
 	public V get(long timeout, TimeUnit timeUnit) throws InterruptedException,TimeoutException {
-		DefaultEntryHolder<V> holder = super.borrow(timeout, timeUnit);
+		EntryHolder<V> holder = super.borrow(timeout, timeUnit);
 		if (holder==null) {
 			throw new TimeoutException();
 		}
-		holderContext.set(new WeakReference<DefaultEntryHolder<V>>(holder));
+		holderContext.set(new WeakReference<EntryHolder<V>>(holder));
 		return holder.get();
 	}
 	
@@ -52,8 +46,8 @@ public class DefaultFastPool<V> extends FastPool<DefaultEntryHolder<V>, V> imple
 	@Override
 	public void release(V value,boolean broken) {
 		assert value!=null;
-		WeakReference<DefaultEntryHolder<V>> holderReference = null;
-		DefaultEntryHolder<V> holder = null;
+		WeakReference<EntryHolder<V>> holderReference = null;
+		EntryHolder<V> holder = null;
 		if ((holderReference=holderContext.get())!=null && (holder=holderReference.get())!=null) {
 			holderContext.remove();
 			if (broken) {
@@ -68,7 +62,7 @@ public class DefaultFastPool<V> extends FastPool<DefaultEntryHolder<V>, V> imple
 	@Override
 	public void scale(int size) {
 		for (int i = 0; i <size; i++) {
-			super.add(new DefaultEntryHolder<V>(objectFactory.makeObject()));
+			super.add(new EntryHolder<V>(objectFactory.makeObject()));
 		}
 	}
 
@@ -76,20 +70,13 @@ public class DefaultFastPool<V> extends FastPool<DefaultEntryHolder<V>, V> imple
 	@Override
 	public void release(V value) {
 		assert value!=null;
-		WeakReference<DefaultEntryHolder<V>> holderReference = null;
-		DefaultEntryHolder<V> holder = null;
+		WeakReference<EntryHolder<V>> holderReference = null;
+		EntryHolder<V> holder = null;
 		if ((holderReference=holderContext.get())!=null && (holder=holderReference.get())!=null) {
 			holderContext.remove();
 			super.requite(holder);
 		}
 		
 	}
-
-
-
-
-	
-
-
 	
 }

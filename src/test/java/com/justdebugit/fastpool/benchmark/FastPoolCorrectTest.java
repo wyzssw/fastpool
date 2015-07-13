@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.justdebugit.fastpool.DefaultFastPool;
-import com.justdebugit.fastpool.DefaultFastPool.ObjectFactory;
+import com.justdebugit.fastpool.ObjectFactory;
 
 
 public class FastPoolCorrectTest {

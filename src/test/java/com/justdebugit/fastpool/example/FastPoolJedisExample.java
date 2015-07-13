@@ -6,7 +6,8 @@ import java.util.concurrent.Executors;
 import redis.clients.jedis.Jedis;
 
 import com.justdebugit.fastpool.DefaultFastPool;
-import com.justdebugit.fastpool.DefaultFastPool.ObjectFactory;
+import com.justdebugit.fastpool.ObjectFactory;
+import com.justdebugit.fastpool.Pool;
 /**
  * 
  * @author justdebugit
@@ -14,7 +15,7 @@ import com.justdebugit.fastpool.DefaultFastPool.ObjectFactory;
  */
 public class FastPoolJedisExample {
 	
-	static final DefaultFastPool<Jedis> fastPool = new DefaultFastPool<Jedis>(5,new ObjectFactory<Jedis>() {
+	static final Pool<Jedis> fastPool = new DefaultFastPool<Jedis>(5,new ObjectFactory<Jedis>() {
 
 		@Override
 		public Jedis makeObject() {
