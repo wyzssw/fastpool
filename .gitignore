@@ -9,3 +9,4 @@ Thumbs.db
 *.classpath
 *.settings
 target
+bin
