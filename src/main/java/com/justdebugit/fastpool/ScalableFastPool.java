@@ -75,7 +75,7 @@ public class ScalableFastPool<V>  implements Pool<V> {
 					}
 					bool = !bool;
 				}
-			}, 1, 1, TimeUnit.SECONDS);
+			}, 1, 2, TimeUnit.SECONDS);
 		}
     	
     }

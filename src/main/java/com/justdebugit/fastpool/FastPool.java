@@ -259,7 +259,7 @@ class  FastPool<T extends IEntryHolder<V>,V>
 		 */
 		@Override
 		protected long tryAcquireShared(final long seq) {
-			return hasQueuedPredecessors() ? -1L : getState() - (seq+1); //保证空闲2个时候的时候才会唤醒队列所有线程，减少大量线程的竞争
+			return hasQueuedPredecessors() ? -1L : getState() - (seq+1); 
 		}
 
 		
