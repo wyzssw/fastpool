@@ -66,9 +66,7 @@ public class ScalableFastPool<V>  implements Pool<V> {
 					int size    = getInternalPool().size();
 					int pendintCount  = getInternalPool().getPendingQueue();
 					if (size<maxSize && pendintCount>0) {
-						for (int i = 0; i < Math.min(maxSize-size, pendintCount); i++) {
-							getInternalPool().add(new EntryHolder<V>(objectFactory.makeObject()));
-						}
+						internalPool.scale(Math.min(maxSize-size, pendintCount));
 					}
 					if (bool) {
 						getInternalPool().tryShrink();
@@ -103,7 +101,7 @@ public class ScalableFastPool<V>  implements Pool<V> {
 
 	@Override
 	public void scale(int size) {
-		throw new UnsupportedOperationException();
+		internalPool.scale(size);
 	}
 	
 
