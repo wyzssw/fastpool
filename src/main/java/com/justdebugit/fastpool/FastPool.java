@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @param <V> ultimately value store in holder
  * @param <T> value holder 
  */
-public class  FastPool<T extends IEntryHolder<V>,V>
+class  FastPool<T extends IEntryHolder<V>,V>
 {
 	 
 	   private static final Logger LOGGER = LoggerFactory.getLogger(FastPool.class);
@@ -35,13 +35,15 @@ public class  FastPool<T extends IEntryHolder<V>,V>
 	   {
 	      this.sharedList = new CopyOnWriteArrayList<IEntryHolder<V>>();
 	      this.synchronizer = new Synchronizer();
-	      this.sequence = new AtomicLong(0);//sequence并非代表池中数量，而是使用次数，只增不减
+	      this.sequence = new AtomicLong(1);//sequence并非代表池中数量，而是使用次数，只增不减
 	      this.threadList = new ThreadLocal<ArrayList<WeakReference<IEntryHolder<V>>>>();
 	   }
 	   
 	   public FastPool(List<T> list){
 		   this();
-		   assert list!=null;
+		   if (list==null||list.size()<2) {
+			   throw new IllegalArgumentException("list size must greater than 2");
+		   }
 		   for (T holder : list) {
 			  add(holder);
 		   }
@@ -257,7 +259,7 @@ public class  FastPool<T extends IEntryHolder<V>,V>
 		 */
 		@Override
 		protected long tryAcquireShared(final long seq) {
-			return hasQueuedPredecessors() ? -1L : getState() - seq;
+			return hasQueuedPredecessors() ? -1L : getState() - (seq+1); //保证空闲2个时候的时候才会唤醒队列所有线程，减少大量线程的竞争
 		}
 
 		
