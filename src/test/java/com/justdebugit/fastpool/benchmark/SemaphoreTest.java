@@ -16,12 +16,12 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author justdebugit
  *
  */
-public class SemphareTest {
+public class SemaphoreTest {
 	private static Semaphore semaphore = new Semaphore(5);
 	private static ReentrantLock lock = new ReentrantLock();
 	private static final CountDownLatch latch = new CountDownLatch(1);
 	private static final AtomicLong     counter = new AtomicLong();
-	private static List<EntryHolder<String>> list = new CopyOnWriteArrayList<SemphareTest.EntryHolder<String>>();
+	private static List<EntryHolder<String>> list = new CopyOnWriteArrayList<SemaphoreTest.EntryHolder<String>>();
 	static{
 		list.add(new EntryHolder<String>("o1"));
 		list.add(new EntryHolder<String>("o2"));

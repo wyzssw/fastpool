@@ -256,12 +256,14 @@ class  FastPool<T extends IEntryHolder<V>,V>
 
 		/**
 		 * 简单公平锁的实现，当自己不是头结点的下一个结点时，也即自己未曾在队列排队
-		 * getState()-seq>0代表这段时间变动过，有还回或者添加操作发生；否则就表示没有变动过
-		 * (getState() - seq)>0 ? 1L : -1L 绕过返回值为0的边界条件
+		 * 返回值大于等于0将代表获取锁成功，返回值小于0代表获取锁失败，需要进行AQS队列
+		 * getState()-seq代表这段时间变动过，有还回或者添加操作发生；否则就表示没有变动过
+		 * getState()-seq-1 为了在传播唤醒后续节点时，在只有1个资源可用的情况下，选择不唤醒后继节点,
+		 * 防止同时唤醒增加线程间竞争
 		 */
 		@Override
 		protected long tryAcquireShared(final long seq) {
-			return hasQueuedPredecessors() ? -1L : ((getState() - seq)>0 ? 1L : -1L); 
+			return hasQueuedPredecessors() ? -1L : getState()-seq-1; 
 		}
 
 		
