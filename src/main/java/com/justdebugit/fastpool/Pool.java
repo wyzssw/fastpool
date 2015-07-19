@@ -1,5 +1,6 @@
 package com.justdebugit.fastpool;
 
+import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 /**
@@ -8,7 +9,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @param <T>
  */
-public interface Pool<T> {
+public interface Pool<T> extends Closeable{
 	
 	/**
 	 * 获取一个对象，支持超时

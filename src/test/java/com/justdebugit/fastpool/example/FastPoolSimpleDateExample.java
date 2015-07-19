@@ -21,6 +21,11 @@ public class FastPoolSimpleDateExample {
 		public SimpleDateFormat makeObject() {
 			  return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		}
+
+		@Override
+		public void destroyObject(SimpleDateFormat v) throws Exception {
+			
+		}
 	});
 	public static void main(String[] args) {
 		ExecutorService executorService = Executors.newFixedThreadPool(10);

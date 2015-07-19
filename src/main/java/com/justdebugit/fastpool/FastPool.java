@@ -157,6 +157,16 @@ class  FastPool<T extends IEntryHolder<V>,V>
 	       return removed;
 	   }
 
+	   
+	   public boolean remove(T holder){
+		   final boolean removed = sharedList.remove(holder);
+	       synchronizer.releaseShared(sequence.incrementAndGet());
+	       if (!removed ) {
+	         LOGGER.warn("shrink attempt failed");
+	       }
+	       return removed;
+	   }
+	   
 	   /**
 	    * 替换损坏的对象
 	    *
@@ -164,12 +174,12 @@ class  FastPool<T extends IEntryHolder<V>,V>
 	   public void replaceAndrequit(final T holder,final V value)
 	   {
 	      if (!holder.state().compareAndSet(IEntryHolder.STATE_IN_USE, IEntryHolder.STATE_REMOVED)) {
-	         LOGGER.warn("Attempt to remove an object error: {}", holder.toString());
+	         LOGGER.error("Attempt to remove an object error: {}", holder.toString());
 	         throw new IllegalStateException("pool execute an object leak");
 	      }
 	      assert value!=null;
 	      holder.set(value);
-	      if (!holder.state().compareAndSet(IEntryHolder.STATE_REMOVED, IEntryHolder.STATE_NOT_IN_USE)) {
+	      if (holder.state().compareAndSet(IEntryHolder.STATE_REMOVED, IEntryHolder.STATE_NOT_IN_USE)) {
 		       synchronizer.releaseShared(sequence.incrementAndGet());
 		  }else {
 			  LOGGER.warn("Attempt to remove an object error: {}", holder.toString());
@@ -196,6 +206,12 @@ class  FastPool<T extends IEntryHolder<V>,V>
 	            }
 	         }
 	      }
+	      return list;
+	   }
+	   
+	  public List<T> values()
+	   {
+	      ArrayList<T> list = new ArrayList<T>(sharedList.size());
 	      return list;
 	   }
 
@@ -242,7 +258,6 @@ class  FastPool<T extends IEntryHolder<V>,V>
 	   {
 	      for (IEntryHolder<V> holder : sharedList) {
 	         LOGGER.info(holder.toString());
-//	    	  System.out.println(holder.toString());
 	      }
 	   }
 	   

@@ -1,5 +1,6 @@
 package com.justdebugit.fastpool;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -45,7 +46,7 @@ public class ScalableFastPool<V>  implements Pool<V> {
 	}
 	
     public  ScalableFastPool(ObjectFactory<V> objectFactory) {
-		this(DEFAULT_MAX_SIZE, DEFAULT_MIN_SIZE, objectFactory);
+		this(DEFAULT_MIN_SIZE,DEFAULT_MAX_SIZE, objectFactory);
 	}
     
     public  ScalableFastPool() {
@@ -136,6 +137,11 @@ public class ScalableFastPool<V>  implements Pool<V> {
 
 	public DefaultFastPool<V> getInternalPool() {
 		return internalPool;
+	}
+
+	@Override
+	public void close() throws IOException {
+		internalPool.close();
 	}
 
 }

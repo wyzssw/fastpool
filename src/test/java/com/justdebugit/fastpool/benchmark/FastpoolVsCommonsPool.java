@@ -61,6 +61,10 @@ public class FastpoolVsCommonsPool {
 					public SimpleDateFormat makeObject() {
 						return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					}
+
+					@Override
+					public void destroyObject(SimpleDateFormat simpleDateFormat) throws Exception {
+					}
 				});
 		return fastPool;
 	}
@@ -139,7 +143,7 @@ public class FastpoolVsCommonsPool {
 								shutdownLatch.countDown();
 								break;
 							};
-							if (countLong.get()<100) {
+							if (countLong.get()<=100) {
 								break;
 							}
 //							System.out.println(fastPool.size());

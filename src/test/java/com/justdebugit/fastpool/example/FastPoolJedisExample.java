@@ -21,6 +21,12 @@ public class FastPoolJedisExample {
 		public Jedis makeObject() {
 			   return new Jedis("127.0.0.1", 6379);
 		}
+
+		@Override
+		public void destroyObject(Jedis jedis) throws Exception {
+			   jedis.close();
+			
+		}
 	});
 	public static void main(String[] args) {
 		ExecutorService executorService = Executors.newFixedThreadPool(10);

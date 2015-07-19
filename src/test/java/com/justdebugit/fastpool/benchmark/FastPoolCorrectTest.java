@@ -25,6 +25,10 @@ public class FastPoolCorrectTest {
 				  list.add(0);
 				  return list;
 			}
+
+			@Override
+			public void destroyObject(List<Integer> list) throws Exception {
+			}
 		});
 		final AtomicLong atomicLong = new AtomicLong();
 		final CountDownLatch latch = new CountDownLatch(1);

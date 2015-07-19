@@ -1,6 +1,9 @@
 package com.justdebugit.fastpool;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 /**
@@ -77,6 +80,19 @@ public class DefaultFastPool<V> extends FastPool<EntryHolder<V>, V> implements P
 			super.requite(holder);
 		}
 		
+	}
+
+	@Override
+	public void close() throws IOException {
+		List<EntryHolder<V>> list =values();
+		for (EntryHolder<V> entryHolder : list) {
+			 V value =  entryHolder.get();
+			 try {
+				objectFactory.destroyObject(value);
+			} catch (Exception e) {
+				throw new IOException(e.getMessage(),e);
+			}
+		}
 	}
 	
 }
